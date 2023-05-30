@@ -1,3 +1,4 @@
+const CHILDHOOD=255,DEATHAGE=510,GONEAGE=500,PREGNANCYDURATION=500,HATCHTIME=100;
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
@@ -10,6 +11,7 @@ function setup() {
 	frameRate(60);
 	noCursor();
 	m = {};
+	eggs = [];
 	m.full = null;
 	c = [];
 	for (var j = 0; j < 10; j++) {
@@ -31,7 +33,7 @@ function draw() {
 	push();
 	textSize(10);
 	fill(255);
-	text(Math.floor(frameRate()),50,50);
+	text(Math.floor(frameRate()), 50, 50);
 	pop();
 	stroke("rgba(0,0,0,0)");
 	push();
@@ -47,6 +49,17 @@ function draw() {
 	}
 	pop();
 	chicktick();
+	for (var s = 0; s < eggs.length; s++) {
+		push();
+		fill(255);
+		circle(eggs[s].x, eggs[s].y, 5);
+		eggs[s].eggtime++;
+		if (eggs[s].eggtime > HATCHTIME) {
+			newc(eggs[s].x, eggs[s].y, 0);
+			eggs.splice(s, 1);
+		}
+		pop();
+	}
 	drawhouse();
 
 	push();
@@ -72,12 +85,20 @@ function chicktick() {
 		if (frameCount % 10 == 0) {
 			b.age++;
 		}
-		if (b.age < 255) {
+		if (b.age < CHILDHOOD) {
 			fill("rgb(255,255," + b.age + ")");
 		} else {
-			fill(510 - b.age);
-			if (510 - b.age < 1) {
+			fill(DEATHAGE - b.age);
+			if (DEATHAGE - b.age < 1) {
 				b.live = false;
+				if(b.deathtimer==null){
+					b.deathtimer=0;
+				}
+				b.deathtimer++;
+				if(b.deathtimer > GONEAGE){
+					c.splice(i,1);
+				
+				}
 			}
 		}
 		if (b.x < 20 || b.x > CX - 20 || b.y < 20 || b.y > CY - 20) {
@@ -101,7 +122,9 @@ function chicktick() {
 			push();
 			textSize(10);
 			fill(255);
-
+			if (b.pregnant == true) {
+				text("pregtime: " + b.pregtime, m.x - 10, m.y - 80);
+			}
 			text("alive: " + b.live, m.x - 10, m.y - 70);
 			text("sex: " + b.sex, m.x - 10, m.y - 60);
 			if (b.sex == "M" && b.sextarget.length != 0) {
@@ -138,8 +161,22 @@ function chicktick() {
 			c[i].md++;
 		}
 
+		if (b.sex == "F" && b.pregnant == true) {
+			if (b.pregtime == null) {
+				b.pregtime = 0;
+			}
+			b.pregtime++;
+			if (b.pregtime > PREGNANCYDURATION) {
+				eggs.push({
+					x: b.x,
+					y: b.y,
+					eggtime: 0
+				});
+				b.pregnant = false;
+			}
 
-		if (b.sex == "M" && b.age >= 200) {
+		}
+		if (b.sex == "M" && b.age >= CHILDHOOD) {
 			push();
 			fill("rgb(255,0,0)");
 			triangle(b.x, b.y + 10, b.x + 5, b.y + 5, b.x - 5, b.y + 5);
@@ -180,7 +217,7 @@ function chicktick() {
 				b.drive = random(0.1, 0.3);
 				b.mating_endurance = ran(25, 50);
 				for (var o = 0; o < c.length; o++) {
-					if (c[o].sex == "F" && c[o].sextarget.length == 0 && c[o].age >= 200 && c[o].pregnant == false) {
+					if (c[o].live == true && c[o].sex == "F" && c[o].sextarget.length == 0 && c[o].age >= 200 && c[o].pregnant == false) {
 						b.sextarget[0] = o;
 						c[o].sextarget.push(i);
 						o = c.length;
@@ -188,7 +225,7 @@ function chicktick() {
 				}
 				if (b.sextarget.length == 0) {
 					for (var r = 0; r < c.length; r++) {
-						if (c[r].sex == "F" && c[r].age >= 200 && c[r].pregnant == false) {
+						if (c[r].live == true && c[r].sex == "F" && c[r].age >= 200 && c[r].pregnant == false) {
 							b.sextarget[0] = r;
 							c[r].sextarget.push(i);
 							r = c.length - 1;
