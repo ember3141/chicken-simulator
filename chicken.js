@@ -1,8 +1,8 @@
-const CHILDHOOD=255,DEATHAGE=510,GONEAGE=500,PREGNANCYDURATION=500,HATCHTIME=100;
+const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 200, AGINGSPEED = 10,FERTILITYRATE=15;
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
-const cool_words = ["luǒ", "huà", "bǐng", "xiào", "dà", "bào", "tiào", "tiàn", "kǒng", "fèng", "fǒng", "nǐng", "pǐng", "lǒ", "fèi", "chàng", "mào", "duǒ", "xǐong", "gè", "gúo", "buǒ", "xiè", "pàng", "duàn", "lǐng", "huǒ", "suè", "fàng", "miàn", "yǒng", "gǒng", "qing", "wà", "kú", "frǒg"];
+const cool_words = ["luǒ", "huà", "bǐng", "xiào", "dà", "bào", "tiào", "tiàn", "kǒng", "fèng", "fǒng", "nǐng", "pǐng", "lǒ", "fèi", "chàng", "mào", "duǒ", "xǐong", "gè", "gúo", "buǒ", "xiè", "pàng", "duàn", "lǐng", "huǒ", "suè", "fàng", "miàn", "yǒng", "gǒng", "qǐng", "wà", "kú", "frǒg", "yǐ", "èr", "sàn", "sǐ", "wu", "lǐu", "qǐ", "bà", "jǐu", "shǐ"];
 
 function setup() {
 	lake = [random(CX * 0.25, CX * 0.75), random(CY * 0.25, CY * 0.75)];
@@ -14,7 +14,8 @@ function setup() {
 	eggs = [];
 	m.full = null;
 	c = [];
-	for (var j = 0; j < 10; j++) {
+	day = 0;
+	for (var j = 0; j < 20; j++) {
 		newc(random(CX * 0.25, CX * 0.75), random(CY * 0.25, CY * 0.75), 0);
 	}
 }
@@ -34,6 +35,7 @@ function draw() {
 	textSize(10);
 	fill(255);
 	text(Math.floor(frameRate()), 50, 50);
+	text("day: " + day, 50, 70);
 	pop();
 	stroke("rgba(0,0,0,0)");
 	push();
@@ -73,7 +75,9 @@ function draw() {
 
 function chicktick() {
 	push();
-
+	if (frameCount % AGINGSPEED == 0) {
+		day++;
+	}
 	for (var i = 0; i < c.length; i++) {
 		b = c[i];
 
@@ -82,22 +86,24 @@ function chicktick() {
 			i = 0;
 		}
 
-		if (frameCount % 10 == 0) {
+		if (frameCount % AGINGSPEED == 0) {
 			b.age++;
+
 		}
 		if (b.age < CHILDHOOD) {
 			fill("rgb(255,255," + b.age + ")");
+			b.size=5+(5*(b.age/CHILDHOOD)) ;
 		} else {
 			fill(DEATHAGE - b.age);
 			if (DEATHAGE - b.age < 1) {
 				b.live = false;
-				if(b.deathtimer==null){
-					b.deathtimer=0;
+				if (b.deathtimer == null) {
+					b.deathtimer = 0;
 				}
 				b.deathtimer++;
-				if(b.deathtimer > GONEAGE){
-					c.splice(i,1);
-				
+				if (b.deathtimer > GONEAGE) {
+					c.splice(i, 1);
+
 				}
 			}
 		}
@@ -188,7 +194,7 @@ function chicktick() {
 				if (b.mating_timer > b.mating_endurance) {
 					b.mating = false;
 					c[b.sextarget[0]].mating = false;
-					if (ran(0, 100) < 15) {
+					if (ran(0, 100) < FERTILITYRATE) {
 						c[b.sextarget[0]].pregnant = true;
 					}
 					b.sextarget = [];
@@ -217,7 +223,7 @@ function chicktick() {
 				b.drive = random(0.1, 0.3);
 				b.mating_endurance = ran(25, 50);
 				for (var o = 0; o < c.length; o++) {
-					if (c[o].live == true && c[o].sex == "F" && c[o].sextarget.length == 0 && c[o].age >= 200 && c[o].pregnant == false) {
+					if (c[o].live == true && c[o].sex == "F" && c[o].sextarget.length == 0 && c[o].age >= CHILDHOOD && c[o].pregnant == false) {
 						b.sextarget[0] = o;
 						c[o].sextarget.push(i);
 						o = c.length;
@@ -225,7 +231,7 @@ function chicktick() {
 				}
 				if (b.sextarget.length == 0) {
 					for (var r = 0; r < c.length; r++) {
-						if (c[r].live == true && c[r].sex == "F" && c[r].age >= 200 && c[r].pregnant == false) {
+						if (c[r].live == true && c[r].sex == "F" && c[r].age >= CHILDHOOD && c[r].pregnant == false) {
 							b.sextarget[0] = r;
 							c[r].sextarget.push(i);
 							r = c.length - 1;
@@ -248,7 +254,11 @@ function chicktick() {
 			pop();
 			push();
 			textSize(10);
+			if (b.pregnant == true) {
+				fill(225,200,200);
+			}else {
 			fill(255);
+		}
 			text(b.name, b.x - 20, b.y - 10);
 			pop();
 		}
