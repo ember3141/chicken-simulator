@@ -1,4 +1,4 @@
-const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 200, AGINGSPEED = 10,FERTILITYRATE=15;
+const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 200, AGINGSPEED = 10, FERTILITYRATE = 15,ENDURANCE_MIN=50 ,ENDURANCE_MAX=100;
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
@@ -82,6 +82,9 @@ function chicktick() {
 		b = c[i];
 
 		if (b.x < 0 || b.x > CX - 0 || b.y < 0 || b.y > CY - 0) {
+			for(var t=0;t<c.length;t++){
+				c[t].sextarget=[];
+			}
 			c.splice(i, 1);
 			i = 0;
 		}
@@ -90,9 +93,12 @@ function chicktick() {
 			b.age++;
 
 		}
+		if (b.pregnant == true) {
+			fill(225, 200, 200);
+		}
 		if (b.age < CHILDHOOD) {
 			fill("rgb(255,255," + b.age + ")");
-			b.size=5+(5*(b.age/CHILDHOOD)) ;
+			b.size = 5 + (5 * (b.age / CHILDHOOD));
 		} else {
 			fill(DEATHAGE - b.age);
 			if (DEATHAGE - b.age < 1) {
@@ -102,6 +108,9 @@ function chicktick() {
 				}
 				b.deathtimer++;
 				if (b.deathtimer > GONEAGE) {
+					for(var u=0;u<c.length;u++){
+						c[u].sextarget=[];
+					}
 					c.splice(i, 1);
 
 				}
@@ -221,7 +230,7 @@ function chicktick() {
 			}
 			if (b.sextarget.length == 0) {
 				b.drive = random(0.1, 0.3);
-				b.mating_endurance = ran(25, 50);
+				b.mating_endurance = ran(ENDURANCE_MIN, ENDURANCE_MAX);
 				for (var o = 0; o < c.length; o++) {
 					if (c[o].live == true && c[o].sex == "F" && c[o].sextarget.length == 0 && c[o].age >= CHILDHOOD && c[o].pregnant == false) {
 						b.sextarget[0] = o;
@@ -254,14 +263,14 @@ function chicktick() {
 			pop();
 			push();
 			textSize(10);
-			if (b.pregnant == true) {
-				fill(225,200,200);
-			}else {
+
 			fill(255);
-		}
+
 			text(b.name, b.x - 20, b.y - 10);
 			pop();
 		}
+
+
 		circle(b.x, b.y, b.size);
 
 	}
