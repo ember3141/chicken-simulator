@@ -11,6 +11,10 @@ function setup() {
 	frameRate(60);
 	noCursor();
 	m = {};
+	param = {
+		names: true,
+
+	};
 	eggs = [];
 	m.full = null;
 	c = [];
@@ -277,6 +281,7 @@ function chicktick() {
 			fill("rgba(0,0,0,0.2)");
 			circle(b.x - 5, b.y, b.size);
 			pop();
+			if(param.names==true){
 			push();
 			textSize(10);
 
@@ -284,6 +289,7 @@ function chicktick() {
 
 			text(b.name, b.x - 20, b.y - 10);
 			pop();
+		}
 		}
 
 		if (b.pregnant == true) {
@@ -396,3 +402,11 @@ function romanize(num) {
 		roman = (key[+digits.pop() + (i * 10)] || "") + roman;
 	return Array(+digits.join("") + 1).join("M") + roman;
 }
+function keyPressed() {
+
+	 switch(keyCode){
+case 78:param.names=!param.names;
+	break;
+
+	}
+  }
