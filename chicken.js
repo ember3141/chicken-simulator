@@ -8,7 +8,7 @@ f ~ change time speed
 */
 
 const STARTING_CHICKENS = 0, CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 500, FERTILITYRATE = 15, ENDURANCE_MIN = 50, ENDURANCE_MAX = 100, CHICKENWIRE = 0.05;
-var AGINGSPEED = 10;
+var AGINGSPEED = 10; 
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
@@ -28,10 +28,12 @@ function setup() {
 	eggs = [];
 	m.full = null;
 	c = [];
+	sawblade=[];
 	day = 0;
 	for (var j = 0; j < STARTING_CHICKENS; j++) {
 		newc(random(CX * 0.25, CX * 0.75), random(CY * 0.25, CY * 0.75), 0);
 	}
+	addblade(100,100,7);
 }
 
 function draw() {
@@ -77,6 +79,17 @@ function draw() {
 			newc(eggs[s].x, eggs[s].y, 0);
 			eggs.splice(s, 1);
 		}
+		pop();
+	}
+	for(var v=0;v<sawblade.length;v++){
+		var x=sawblade[v].x;
+		var y=sawblade[v].y;
+		var w=sawblade[v].w;
+		var h=(w*Math.sin(60));
+		push();
+		// rotate(frameCount);
+		triangle(x-(w/2),y+(h/2),x,y-(h/2),x+(w/2),y+(h/2));
+		
 		pop();
 	}
 	drawhouse();
@@ -469,4 +482,11 @@ function keyPressed() {
 			});
 			break;
 	}
+}
+function addblade(x,y,w){
+	sawblade.push({
+		x:x,
+		y:y,
+		w:w,
+	});
 }
