@@ -26,9 +26,14 @@ function setup() {
 		control: null,
 	};
 	eggs = [];
+	food = 0;
 	m.full = null;
 	c = [];
 	sawblade = [];
+	foodbin = {
+		x:200,
+		y:200
+	};
 	day = 0;
 	for (var j = 0; j < STARTING_CHICKENS; j++) {
 		newc(random(CX * 0.25, CX * 0.75), random(CY * 0.25, CY * 0.75), 0);
@@ -50,9 +55,9 @@ function draw() {
 	push();
 	textSize(10);
 	fill(255);
-	text(Math.floor(frameRate()), 50, 50);
-	text("day: " + day, 50, 60);
-	text(AGINGSPEED, 50, 70);
+	text(Math.floor(frameRate()), 25, 50);
+	text("day: " + day, 25, 60);
+	text(AGINGSPEED, 25, 70);
 	pop();
 	stroke("rgba(0,0,0,0)");
 	push();
@@ -100,7 +105,11 @@ function draw() {
 		pop();
 	}
 	drawhouse();
-
+push();
+fill(225,225,0);
+textSize(25);
+	text(food,25,37);
+pop();
 	push();
 	fill("rgba(0,0,0,0.25)");
 	triangle(m.x - 5, m.y + 5, m.x + 15, m.y + 15, m.x + 5, m.y + 25);
