@@ -282,7 +282,7 @@ function chicktick() {
             text("name: " + b.name, m.x - 10, m.y - 10);
             pop();
             if (keyIsDown(17) == true) {
-                param.control = i;
+					param.control = i;		
             }
         } else if (i != param.control && b.live == true && b.md < b.mvt && b.x > 20 && b.x < CX - 20 && b.y > 20 && b.y < CY - 20 && b.mating == false) {
 
@@ -444,6 +444,9 @@ function chicktick() {
         if (b.pregnant == true) {
             b.color = "rgb(255,150,150)";
         }
+		if(param.control==i){
+			b.color="rgba(0,255,0,1)";
+		}
         fill(b.color);
         circle(b.x, b.y, b.size);
 
