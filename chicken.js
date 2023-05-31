@@ -8,7 +8,7 @@ f ~ change time speed
 */
 
 const STARTING_CHICKENS = 0, CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 500, FERTILITYRATE = 15, ENDURANCE_MIN = 50, ENDURANCE_MAX = 100, CHICKENWIRE = 0.05;
-var AGINGSPEED = 10; 
+var AGINGSPEED = 10;
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
@@ -28,12 +28,12 @@ function setup() {
 	eggs = [];
 	m.full = null;
 	c = [];
-	sawblade=[];
+	sawblade = [];
 	day = 0;
 	for (var j = 0; j < STARTING_CHICKENS; j++) {
 		newc(random(CX * 0.25, CX * 0.75), random(CY * 0.25, CY * 0.75), 0);
 	}
-	addblade(100,100,7);
+	addblade(100, 100, 20);
 }
 
 function draw() {
@@ -81,15 +81,20 @@ function draw() {
 		}
 		pop();
 	}
-	for(var v=0;v<sawblade.length;v++){
-		var x=sawblade[v].x;
-		var y=sawblade[v].y;
-		var w=sawblade[v].w;
-		var h=(w*Math.sin(60));
+
+	for (var v = 0; v < sawblade.length; v++) {
+		var x = sawblade[v].x;
+		var y = sawblade[v].y;
+		var w = sawblade[v].w;
+		var h = (w * Math.sin(45));
 		push();
-		// rotate(frameCount);
-		triangle(x-(w/2),y+(h/2),x,y-(h/2),x+(w/2),y+(h/2));
-		
+
+		translate(x, y);
+		rotate(frameCount * 10);
+		// translate(w/2,h/2);
+		// translate(x,y);
+		triangle(0 - (w / 2), 0 + (h / 2), 0, 0 - (h / 2), 0 + (w / 2), 0 + (h / 2));
+
 		pop();
 	}
 	drawhouse();
@@ -109,9 +114,20 @@ function chicktick() {
 		day++;
 	}
 
+
 	for (var i = 0; i < c.length; i++) {
 		b = c[i];
-
+		// console.log(sawblade.length);
+		for (var v = 0; v < sawblade.length; v++) {
+			var x = sawblade[v].x;
+			var y = sawblade[v].y;
+			var w = sawblade[v].w;
+			var h = (w * Math.sin(45));
+			// console.log("frog");
+			if (b.x > (x - (w / 2)) && b.x < (x + (w / 2)) && b.y > y - (h / 2) && b.y < y + (h / 2)) {
+				c[i].live = false;
+			}
+		}
 		if (b.x < 0 || b.x > CX - 0 || b.y < 0 || b.y > CY - 0) {
 			for (var t = 0; t < c.length; t++) {
 				c[t].sextarget = [];
@@ -124,7 +140,19 @@ function chicktick() {
 			b.age++;
 
 		}
+		if (b.live == false) {
+			if (b.deathtimer == null) {
+				b.deathtimer = 0;
+			}
+			b.deathtimer++;
+			if (b.deathtimer > GONEAGE) {
+				for (var u = 0; u < c.length; u++) {
+					c[u].sextarget = [];
+				}
+				c.splice(i, 1);
 
+			}
+		}
 		if (b.age < CHILDHOOD) {
 			fill("rgb(255,255," + b.age + ")");
 			b.size = 5 + (5 * (b.age / CHILDHOOD));
@@ -132,17 +160,7 @@ function chicktick() {
 			fill(DEATHAGE - b.age);
 			if (DEATHAGE - b.age < 1) {
 				b.live = false;
-				if (b.deathtimer == null) {
-					b.deathtimer = 0;
-				}
-				b.deathtimer++;
-				if (b.deathtimer > GONEAGE) {
-					for (var u = 0; u < c.length; u++) {
-						c[u].sextarget = [];
-					}
-					c.splice(i, 1);
 
-				}
 			}
 		}
 		if (b.x < 20 || b.x > CX - 20 || b.y < 20 || b.y > CY - 20) {
@@ -483,10 +501,10 @@ function keyPressed() {
 			break;
 	}
 }
-function addblade(x,y,w){
+function addblade(x, y, w) {
 	sawblade.push({
-		x:x,
-		y:y,
-		w:w,
+		x: x,
+		y: y,
+		w: w,
 	});
 }
