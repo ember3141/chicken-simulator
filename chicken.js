@@ -1,4 +1,4 @@
-const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 200, AGINGSPEED = 10, FERTILITYRATE = 15,ENDURANCE_MIN=50 ,ENDURANCE_MAX=100;
+const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 500, AGINGSPEED = 10, FERTILITYRATE = 15,ENDURANCE_MIN=50 ,ENDURANCE_MAX=100,CHICKENWIRE=0.05;
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
@@ -55,6 +55,8 @@ function draw() {
 		push();
 		fill(255);
 		circle(eggs[s].x, eggs[s].y, 5);
+		textSize(5);
+		text("egg", eggs[s].x-5, eggs[s].y-5);
 		eggs[s].eggtime++;
 		if (eggs[s].eggtime > HATCHTIME) {
 			newc(eggs[s].x, eggs[s].y, 0);
@@ -93,9 +95,7 @@ function chicktick() {
 			b.age++;
 
 		}
-		if (b.pregnant == true) {
-			fill(225, 200, 200);
-		}
+
 		if (b.age < CHILDHOOD) {
 			fill("rgb(255,255," + b.age + ")");
 			b.size = 5 + (5 * (b.age / CHILDHOOD));
@@ -121,7 +121,23 @@ function chicktick() {
 			fill("rgba(255,0,0,0.5)");
 			circle(b.x + ran(-2, 2), b.y + ran(-2, 2), 20);
 			pop();
+			
 		}
+
+			if(b.x<20){
+				b.x+=CHICKENWIRE;
+			}
+
+			if(b.x>CX-20){
+				b.x-=CHICKENWIRE;
+			}
+			if(b.y<20){
+				b.y+=CHICKENWIRE;
+			}
+
+			if(b.y> CY-20){
+				b.y-=CHICKENWIRE;
+			}
 
 		if (m.d == false) {
 			b.held = false;
@@ -270,7 +286,9 @@ function chicktick() {
 			pop();
 		}
 
-
+		if (b.pregnant == true) {
+			fill(255, 150, 150);
+		}
 		circle(b.x, b.y, b.size);
 
 	}
