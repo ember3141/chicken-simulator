@@ -1,5 +1,14 @@
-const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 500, FERTILITYRATE = 15,ENDURANCE_MIN=50 ,ENDURANCE_MAX=100,CHICKENWIRE=0.05;
-var  AGINGSPEED = 10;
+/*
+e ~ spawn egg
+click ~ pick up chicken
+click + ctrl ~ control chicken
+arrow keys to move chicken
+f ~ change time speed
+
+*/
+
+const STARTING_CHICKENS = 0, CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 500, FERTILITYRATE = 15, ENDURANCE_MIN = 50, ENDURANCE_MAX = 100, CHICKENWIRE = 0.05;
+var AGINGSPEED = 10;
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
@@ -20,7 +29,7 @@ function setup() {
 	m.full = null;
 	c = [];
 	day = 0;
-	for (var j = 0; j < 20; j++) {
+	for (var j = 0; j < STARTING_CHICKENS; j++) {
 		newc(random(CX * 0.25, CX * 0.75), random(CY * 0.25, CY * 0.75), 0);
 	}
 }
@@ -40,8 +49,8 @@ function draw() {
 	textSize(10);
 	fill(255);
 	text(Math.floor(frameRate()), 50, 50);
-	text("day: " + day, 50, 60); 
-	text( AGINGSPEED , 50, 70); 
+	text("day: " + day, 50, 60);
+	text(AGINGSPEED, 50, 70);
 	pop();
 	stroke("rgba(0,0,0,0)");
 	push();
@@ -60,9 +69,9 @@ function draw() {
 	for (var s = 0; s < eggs.length; s++) {
 		push();
 		fill(255);
+		textSize(10);
+		text(HATCHTIME - eggs[s].eggtime, eggs[s].x - 7, eggs[s].y - 7);
 		circle(eggs[s].x, eggs[s].y, 5);
-		textSize(5);
-		text("egg", eggs[s].x-5, eggs[s].y-5);
 		eggs[s].eggtime++;
 		if (eggs[s].eggtime > HATCHTIME) {
 			newc(eggs[s].x, eggs[s].y, 0);
@@ -91,8 +100,8 @@ function chicktick() {
 		b = c[i];
 
 		if (b.x < 0 || b.x > CX - 0 || b.y < 0 || b.y > CY - 0) {
-			for(var t=0;t<c.length;t++){
-				c[t].sextarget=[];
+			for (var t = 0; t < c.length; t++) {
+				c[t].sextarget = [];
 			}
 			c.splice(i, 1);
 			i = 0;
@@ -115,8 +124,8 @@ function chicktick() {
 				}
 				b.deathtimer++;
 				if (b.deathtimer > GONEAGE) {
-					for(var u=0;u<c.length;u++){
-						c[u].sextarget=[];
+					for (var u = 0; u < c.length; u++) {
+						c[u].sextarget = [];
 					}
 					c.splice(i, 1);
 
@@ -128,23 +137,23 @@ function chicktick() {
 			fill("rgba(255,0,0,0.5)");
 			circle(b.x + ran(-2, 2), b.y + ran(-2, 2), 20);
 			pop();
-			
+
 		}
 
-			if(b.x<20){
-				b.x+=CHICKENWIRE;
-			}
+		if (b.x < 20) {
+			b.x += CHICKENWIRE;
+		}
 
-			if(b.x>CX-20){
-				b.x-=CHICKENWIRE;
-			}
-			if(b.y<20){
-				b.y+=CHICKENWIRE;
-			}
+		if (b.x > CX - 20) {
+			b.x -= CHICKENWIRE;
+		}
+		if (b.y < 20) {
+			b.y += CHICKENWIRE;
+		}
 
-			if(b.y> CY-20){
-				b.y-=CHICKENWIRE;
-			}
+		if (b.y > CY - 20) {
+			b.y -= CHICKENWIRE;
+		}
 
 		if (m.d == false) {
 			b.held = false;
@@ -175,10 +184,10 @@ function chicktick() {
 			text("age: " + b.age, m.x - 10, m.y - 20);
 			text("name: " + b.name, m.x - 10, m.y - 10);
 			pop();
-			if(keyIsDown(17)==true){
-				param.control=i;
+			if (keyIsDown(17) == true) {
+				param.control = i;
 			}
-		} else if (i!=param.control&&b.live == true && b.md < b.mvt && b.x > 20 && b.x < CX - 20 && b.y > 20 && b.y < CY - 20 && b.mating == false) {
+		} else if (i != param.control && b.live == true && b.md < b.mvt && b.x > 20 && b.x < CX - 20 && b.y > 20 && b.y < CY - 20 && b.mating == false) {
 
 			if (b.r == 1) {
 				b.x += b.s * Math.cos(b.d);
@@ -195,7 +204,7 @@ function chicktick() {
 			b.d = ran(0, 360);
 			b.md = 0;
 			b.mvt = ran(10, 50);
-			if (i!=param.control&&b.mating == false && b.live == true) {
+			if (i != param.control && b.mating == false && b.live == true) {
 				b.x += b.s * Math.cos(b.d);
 				b.y += b.s * Math.sin(b.d);
 			}
@@ -236,7 +245,7 @@ function chicktick() {
 				}
 			}
 			if (b.sextarget.length == 1) {
-				if (i!=param.control&&b.live == true && b.mating == false && c[b.sextarget[0]].mating == false) {
+				if (i != param.control && b.live == true && b.mating == false && c[b.sextarget[0]].mating == false) {
 					if (b.x - c[b.sextarget[0]].x < 0) {
 						b.x += b.drive;
 					} else {
@@ -287,45 +296,45 @@ function chicktick() {
 			fill("rgba(0,0,0,0.2)");
 			circle(b.x - 5, b.y, b.size);
 			pop();
-			if(param.names==0){
-			push();
-			textSize(10);
+			if (param.names == 0) {
+				push();
+				textSize(10);
 
-			fill(255);
+				fill(255);
 
-			text(b.name, b.x - 20, b.y - 10);
-			pop();
-		} else 			if(param.names==1){
-			push();
-			textSize(10);
+				text(b.name, b.x - 20, b.y - 10);
+				pop();
+			} else if (param.names == 1) {
+				push();
+				textSize(10);
 
-			fill(255);
+				fill(255);
 
-			text(i, b.x-5, b.y - 10);
-			pop();
-		} 
-		}
-		if (param.control!=null){
-		if(i==param.control){
-			fill(0,255,0);
-			if(keyIsDown(16)){
-				CONTROLSPEED=2;
-			}else{
-				CONTROLSPEED=1;
-			}
-			if(keyIsDown(LEFT_ARROW)){
-				b.x-=CONTROLSPEED;
-			}
-			if(keyIsDown(RIGHT_ARROW)){
-				b.x+=CONTROLSPEED;
-			}
-			if(keyIsDown(UP_ARROW)){
-				b.y-=CONTROLSPEED;
-			}
-			if(keyIsDown(DOWN_ARROW)){
-				b.y+=CONTROLSPEED;
+				text(i, b.x - 5, b.y - 10);
+				pop();
 			}
 		}
+		if (param.control != null) {
+			if (i == param.control) {
+				fill(0, 255, 0);
+				if (keyIsDown(16)) {
+					CONTROLSPEED = 2;
+				} else {
+					CONTROLSPEED = 1;
+				}
+				if (keyIsDown(LEFT_ARROW)) {
+					b.x -= CONTROLSPEED;
+				}
+				if (keyIsDown(RIGHT_ARROW)) {
+					b.x += CONTROLSPEED;
+				}
+				if (keyIsDown(UP_ARROW)) {
+					b.y -= CONTROLSPEED;
+				}
+				if (keyIsDown(DOWN_ARROW)) {
+					b.y += CONTROLSPEED;
+				}
+			}
 		}
 		if (b.pregnant == true) {
 			fill(255, 150, 150);
@@ -439,18 +448,25 @@ function romanize(num) {
 }
 function keyPressed() {
 
-	 switch(keyCode){
-case 78:
-	param.names++;
-	if(param.names>2){
-		param.names=0;
+	switch (keyCode) {
+		case 78:
+			param.names++;
+			if (param.names > 2) {
+				param.names = 0;
+			}
+			break;
+		case 70:
+			AGINGSPEED--;
+			if (AGINGSPEED < 0) {
+				AGINGSPEED = 10;
+			}
+			break;
+		case 69:
+			eggs.push({
+				x: m.x,
+				y: m.y,
+				eggtime: 0
+			});
+			break;
 	}
-	break;
-case 70:
-	AGINGSPEED --;
-	if(AGINGSPEED<0){
-		AGINGSPEED = 10;
-	}
-	break;
-	}
-  }
+}
