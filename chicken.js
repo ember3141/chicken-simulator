@@ -1,4 +1,5 @@
-const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 500, AGINGSPEED = 10, FERTILITYRATE = 15,ENDURANCE_MIN=50 ,ENDURANCE_MAX=100,CHICKENWIRE=0.05;
+const CHILDHOOD = 255, DEATHAGE = 1000, GONEAGE = 500, PREGNANCYDURATION = 500, HATCHTIME = 500, FERTILITYRATE = 15,ENDURANCE_MIN=50 ,ENDURANCE_MAX=100,CHICKENWIRE=0.05;
+var  AGINGSPEED = 10;
 const CX = 500,
 	CY = 500;
 p5.disableFriendlyErrors = true;
@@ -12,8 +13,8 @@ function setup() {
 	noCursor();
 	m = {};
 	param = {
-		names: true,
-
+		names: 0,
+		control: null,
 	};
 	eggs = [];
 	m.full = null;
@@ -39,7 +40,8 @@ function draw() {
 	textSize(10);
 	fill(255);
 	text(Math.floor(frameRate()), 50, 50);
-	text("day: " + day, 50, 70);
+	text("day: " + day, 50, 60); 
+	text( AGINGSPEED , 50, 70); 
 	pop();
 	stroke("rgba(0,0,0,0)");
 	push();
@@ -84,6 +86,7 @@ function chicktick() {
 	if (frameCount % AGINGSPEED == 0) {
 		day++;
 	}
+
 	for (var i = 0; i < c.length; i++) {
 		b = c[i];
 
@@ -172,7 +175,10 @@ function chicktick() {
 			text("age: " + b.age, m.x - 10, m.y - 20);
 			text("name: " + b.name, m.x - 10, m.y - 10);
 			pop();
-		} else if (b.live == true && b.md < b.mvt && b.x > 20 && b.x < CX - 20 && b.y > 20 && b.y < CY - 20 && b.mating == false) {
+			if(keyIsDown(17)==true){
+				param.control=i;
+			}
+		} else if (i!=param.control&&b.live == true && b.md < b.mvt && b.x > 20 && b.x < CX - 20 && b.y > 20 && b.y < CY - 20 && b.mating == false) {
 
 			if (b.r == 1) {
 				b.x += b.s * Math.cos(b.d);
@@ -189,7 +195,7 @@ function chicktick() {
 			b.d = ran(0, 360);
 			b.md = 0;
 			b.mvt = ran(10, 50);
-			if (b.mating == false && b.live == true) {
+			if (i!=param.control&&b.mating == false && b.live == true) {
 				b.x += b.s * Math.cos(b.d);
 				b.y += b.s * Math.sin(b.d);
 			}
@@ -230,7 +236,7 @@ function chicktick() {
 				}
 			}
 			if (b.sextarget.length == 1) {
-				if (b.live == true && b.mating == false && c[b.sextarget[0]].mating == false) {
+				if (i!=param.control&&b.live == true && b.mating == false && c[b.sextarget[0]].mating == false) {
 					if (b.x - c[b.sextarget[0]].x < 0) {
 						b.x += b.drive;
 					} else {
@@ -281,7 +287,7 @@ function chicktick() {
 			fill("rgba(0,0,0,0.2)");
 			circle(b.x - 5, b.y, b.size);
 			pop();
-			if(param.names==true){
+			if(param.names==0){
 			push();
 			textSize(10);
 
@@ -289,9 +295,38 @@ function chicktick() {
 
 			text(b.name, b.x - 20, b.y - 10);
 			pop();
-		}
-		}
+		} else 			if(param.names==1){
+			push();
+			textSize(10);
 
+			fill(255);
+
+			text(i, b.x-5, b.y - 10);
+			pop();
+		} 
+		}
+		if (param.control!=null){
+		if(i==param.control){
+			fill(0,255,0);
+			if(keyIsDown(16)){
+				CONTROLSPEED=2;
+			}else{
+				CONTROLSPEED=1;
+			}
+			if(keyIsDown(LEFT_ARROW)){
+				b.x-=CONTROLSPEED;
+			}
+			if(keyIsDown(RIGHT_ARROW)){
+				b.x+=CONTROLSPEED;
+			}
+			if(keyIsDown(UP_ARROW)){
+				b.y-=CONTROLSPEED;
+			}
+			if(keyIsDown(DOWN_ARROW)){
+				b.y+=CONTROLSPEED;
+			}
+		}
+		}
 		if (b.pregnant == true) {
 			fill(255, 150, 150);
 		}
@@ -405,8 +440,17 @@ function romanize(num) {
 function keyPressed() {
 
 	 switch(keyCode){
-case 78:param.names=!param.names;
+case 78:
+	param.names++;
+	if(param.names>2){
+		param.names=0;
+	}
 	break;
-
+case 70:
+	AGINGSPEED --;
+	if(AGINGSPEED<0){
+		AGINGSPEED = 10;
+	}
+	break;
 	}
   }
